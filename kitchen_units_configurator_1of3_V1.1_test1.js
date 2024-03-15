@@ -2,11 +2,17 @@
     // Unique prefix for localStorage to avoid conflicts
     const localStoragePrefix = 'uniquePrefix_';
 
-    // Original colors for reset purposes
-    const originalColors = {
-        door: '#d34242',
-        cabinet: '#b0ff32'
-    };
+    // Helper function to update SVG colors
+    function updateSvgColors(matchColor, newColor) {
+        document.querySelectorAll('svg').forEach(svg => {
+            const paths = svg.querySelectorAll('path');
+            paths.forEach(path => {
+                if (path.getAttribute('fill') === matchColor) {
+                    path.setAttribute('fill', newColor);
+                }
+            });
+        });
+    }
 
     // Encapsulated function to display the selection
     function displaySelection(swatchType, selection) {
@@ -28,38 +34,17 @@
                         swatchLabels[index].textContent = selection.label;
                     }
                 });
+
+                // Update SVG colors based on swatch type
+                if (swatchType === 'door') {
+                    updateSvgColors('#d34242', selection.bgColor);
+                } else if (swatchType === 'cabinet') {
+                    updateSvgColors('#b0ff32', selection.bgColor);
+                }
                 break;
             default:
                 console.error('Unrecognized swatch type:', swatchType);
         }
-
-        // Call updateSvgColor here to ensure real-time updates
-        updateSvgColor(swatchType, selection.bgColor);
-    }
-
-    // Function to update SVG color based on swatch type
-    function updateSvgColor(swatchType, color) {
-        const svgs = document.querySelectorAll('svg');
-        if (!svgs.length) return; // Exit if no SVG found
-
-        svgs.forEach(svg => {
-            // Reset colors for the specific group before applying the new selection
-            const colorTarget = originalColors[swatchType];
-            const paths = svg.querySelectorAll(`[style*="fill:${colorTarget}"]`);
-            
-            // Reset any previously altered paths to their original color
-            svg.querySelectorAll(`[data-original-color="${swatchType}"]`).forEach(path => {
-                const originalColor = path.getAttribute('data-original-color') === 'door' ? originalColors.door : originalColors.cabinet;
-                path.style.fill = originalColor;
-                path.removeAttribute('data-original-color');
-            });
-
-            // Apply the new color
-            paths.forEach(path => {
-                path.style.fill = color; // Update the fill color
-                path.setAttribute('data-original-color', swatchType); // Mark with the current selection type for future resets
-            });
-        });
     }
 
     // Event listener for DOMContentLoaded
@@ -69,19 +54,17 @@
                 const swatchType = this.getAttribute('data-swatch-type');
                 const label = this.querySelector('.btn_colourway_label').textContent;
 
-                const selection = {
-                    swatchName: this.getAttribute('data-swatch-name'),
-                    bgColor: this.style.backgroundColor,
-                    dataTheme: this.getAttribute('data-theme'),
-                    label: label
-                };
+                let selection;
+                const swatchName = this.getAttribute('data-swatch-name');
+                const bgColor = this.style.backgroundColor;
+                const dataTheme = this.getAttribute('data-theme');
+                selection = { swatchName, bgColor, dataTheme, label };
 
                 localStorage.setItem(localStoragePrefix + swatchType, JSON.stringify(selection));
                 displaySelection(swatchType, selection);
             });
         });
 
-        // Apply saved selections for instant update on DOM load without reload
         ['door', 'cabinet'].forEach(swatchType => {
             const savedSelection = localStorage.getItem(localStoragePrefix + swatchType);
             if (savedSelection) {
