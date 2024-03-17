@@ -1,6 +1,6 @@
 (function() {
     // Unique prefix for localStorage to avoid conflicts
-    const localStoragePrefix = 'uniquePrefix_';
+    const localStoragePrefix = 'colourSelection_';
 
     // Helper function to update SVG fill colors
     function updateSvgFillColors(swatchType, newColor) {
