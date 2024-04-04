@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const observer = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
                 if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    loadAndApplySelection('colorSelection', '.color-select');
+                    loadAndApplySelection('setSelectFieldColour', '.color-select');
                 }
             });
         });
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Generalized content load handling removed for simplicity as it's not needed without multiple selections
 
-    attachButtonListeners('.color-btn', '.color-select', 'colorSelection');
+    attachButtonListeners('.color-btn', '.color-select', 'setSelectFieldColour');
     setupObservers();
-    loadAndApplySelection('colorSelection', '.color-select');
+    loadAndApplySelection('setSelectFieldColour', '.color-select');
 });
