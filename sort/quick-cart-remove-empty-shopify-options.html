@@ -1,0 +1,24 @@
+<script>
+  // (Quick cart) Removes empty option divs dynamically for cleaner UI.
+  function checkAndRemoveOptions() {
+    const optionDivs = document.querySelectorAll('div[cart-item="options"]');
+    optionDivs.forEach(div => {
+      const valueDiv = div.querySelector('div[option="value"].option-value');
+      if (valueDiv.textContent.trim() === '""') {
+        div.remove(); // This removes the div from the DOM
+      }
+    });
+  }
+
+  // Create an observer instance linked to a callback function
+  const observer = new MutationObserver((mutationsList, observer) => {
+    // Check and remove options whenever mutations are observed
+    checkAndRemoveOptions();
+  });
+
+  // Start observing the document body for configured mutations
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  // Ensure to check options on initial load as well
+  document.addEventListener('DOMContentLoaded', checkAndRemoveOptions);
+</script>

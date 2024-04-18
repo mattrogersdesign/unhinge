@@ -1,0 +1,39 @@
+<a href="#" data-text-default="Click me" data-text-toggled="Clicked!">Click me</a>
+
+<style>
+/* Toggle text on click - Apply the opacity transition to all elements with 'data-text-toggled' attribute */
+[data-text-toggled] {
+  transition: opacity 0.5s ease;
+  opacity: 1;
+  cursor: pointer; /* Makes it clear the element is clickable */
+}
+</style>
+
+<script>
+// This script adds a smooth fade transition effect to elements with 'data-text-toggled' attribute.
+// Elements will toggle between two text states, with the text fading out and then fading back in with the new text.
+// Add 'data-text-default' and 'data-text-toggled' attributes to any element to enable this toggling behavior.
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    // Attach click event listeners to all elements with a 'data-text-toggled' attribute.
+    document.querySelectorAll('[data-text-toggled]').forEach(element => {
+        element.addEventListener('click', function() {
+            // Retrieve the element's default and toggled text from data attributes.
+            const defaultText = this.getAttribute('data-text-default');
+            const toggledText = this.getAttribute('data-text-toggled');
+            
+            // Begin the fade-out effect by setting the opacity to 0.
+            this.style.opacity = 0;
+
+            // Use setTimeout to wait for the fade-out transition to complete before changing the text.
+            setTimeout(() => {
+                // Toggle the text to the other state.
+                this.textContent = this.textContent === defaultText ? toggledText : defaultText;
+
+                // Fade the element back in by restoring its opacity to 1.
+                this.style.opacity = 1;
+            }, 500); // Match this duration with the CSS transition duration for opacity.
+        });
+    });
+});
+</script>

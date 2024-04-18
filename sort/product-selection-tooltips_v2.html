@@ -1,0 +1,48 @@
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to check and restore the state from local storage
+    function restoreState() {
+        ['door-colour', 'cabinet-colour', 'assembly'].forEach(group => {
+            const isActive = localStorage.getItem(`tooltip-${group}`);
+            if (isActive === 'true') {
+                document.querySelector(`[data-tooltip="${group}"]`).style.display = 'none';
+            }
+        });
+        checkAllSelected();
+    }
+
+    // Function to save the state to local storage and set tooltip opacity to 0
+    function updateStateAndHideTooltip(group) {
+        localStorage.setItem(`tooltip-${group}`, 'true');
+        document.querySelector(`[data-tooltip="${group}"]`).style.opacity = '0';
+        checkAllSelected();
+    }
+
+    // Function to check if all selections are made
+    function checkAllSelected() {
+        const allSelected = ['door-colour', 'cabinet-colour', 'assembly'].every(group => {
+            return localStorage.getItem(`tooltip-${group}`) === 'true';
+        });
+        if (allSelected) {
+            document.querySelector('.products_blocker').style.display = 'none';
+            // Ensure the div with ID "shop-units" is visible and fully opaque
+            const shopUnits = document.getElementById('shop-units');
+            if (shopUnits) {
+                shopUnits.style.opacity = '1';
+            }
+        }
+    }
+    // Event listener for button clicks
+    document.querySelectorAll('button[data-btngroup]').forEach(button => {
+        button.addEventListener('click', function() {
+            const group = this.getAttribute('data-btngroup');
+            updateStateAndHideTooltip(group);
+        });
+    });
+
+    // Restore state from local storage on page load
+    restoreState();
+});
+
+</script>

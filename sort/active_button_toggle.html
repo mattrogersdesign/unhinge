@@ -1,0 +1,98 @@
+<div>
+  <h2>Button Group 1</h2>
+  <button data-btngroup="group1" data-action="toggle-active">Option 1A</button>
+  <button data-btngroup="group1" data-action="toggle-active">Option 1B</button>
+  <a href="#" data-btngroup="group1" data-action="toggle-active" class="btn_link">Link 1C</a>
+</div>
+
+<div>
+  <h2>Button Group 2</h2>
+  <button data-btngroup="group2" data-action="toggle-active">Option 2A</button>
+  <button data-btngroup="group2" data-action="toggle-active">Option 2B</button>
+  <a href="#" data-btngroup="group2" data-action="toggle-active" class="btn_link">Link 2C</a>
+</div>
+
+
+<style>
+
+/* General styling for all active elements */
+[data-active="true"] {
+  font-weight: bold;
+  color: white;
+  background-color: #007BFF; /* Default blue background */
+  padding: 8px;
+  margin: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Unique styling for Group 1's active state */
+[data-btngroup="group1"][data-active="true"] {
+  background-color: #28a745; /* Green background */
+}
+
+/* Unique styling for Group 2's active state */
+[data-btngroup="group2"][data-active="true"] {
+  background-color: #dc3545; /* Red background */
+}
+
+</style>
+
+
+
+<script>
+
+// Interactive Button Groups with Active State Management.
+
+document.addEventListener('DOMContentLoaded', () => {
+  const findElementText = (element) => {
+    return element.tagName.toLowerCase() === 'button' || !element.querySelector('.btn_main_text') ?
+      element.textContent.trim() :
+      element.querySelector('.btn_main_text').textContent.trim();
+  };
+
+  const updateActive = (groupElement, elementText) => {
+    const groupName = groupElement.getAttribute('data-btngroup');
+    const elements = document.querySelectorAll(`[data-btngroup="${groupName}"][data-action="toggle-active"]`);
+    elements.forEach(el => {
+      el.removeAttribute('data-active');
+      if (findElementText(el) === elementText) {
+        el.setAttribute('data-active', 'true');
+        localStorage.setItem(groupName, elementText);
+      }
+    });
+  };
+
+  const reapplyActiveState = () => {
+    document.querySelectorAll('[data-btngroup]').forEach(groupElement => {
+      const groupName = groupElement.getAttribute('data-btngroup');
+      const savedElementText = localStorage.getItem(groupName);
+      if (savedElementText) {
+        updateActive(groupElement, savedElementText);
+      }
+    });
+  };
+
+  const handleElementClick = (event) => {
+    const target = event.target.closest('[data-action="toggle-active"]');
+    if (target && target.getAttribute('data-btngroup')) {
+      const groupElement = target.closest('[data-btngroup]');
+      const elementText = findElementText(target);
+      updateActive(groupElement, elementText);
+    }
+  };
+
+  reapplyActiveState();
+  document.addEventListener('click', handleElementClick);
+});
+
+</script>
+
+
+
+
+
+
+
+
+
