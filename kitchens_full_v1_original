@@ -1,0 +1,169 @@
+<script src="https://cdn.jsdelivr.net/gh/mattrogersdesign/unhinge@main/btngroup_active_toggle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mattrogersdesign/unhinge@main/kitchen_units_configurator_1of3_V1.1.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mattrogersdesign/unhinge@main/kitchen_units_configurator_2of3_V3.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mattrogersdesign/unhinge@main/kitchen_units_configurator_3of3.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+
+<script>
+
+// Initialize Swiper
+document.addEventListener('DOMContentLoaded', function () {
+  // Initialize Swiper
+  var swiper = new Swiper(".bghero_slider", {
+    slidesPerView: 'auto', // Important if using custom widths
+    spaceBetween: 0, // Adjust based on your design needs
+    centeredSlides: false,
+    loop: true, // Enable infinite loop mode
+    navigation: {
+      nextEl: '#pagination-container .swiper_pagination_btn_next',
+      prevEl: '#pagination-container .swiper_pagination_btn_prev',
+    },
+  });
+	//navigate to specific slides based on the alt attribute
+  var buttons = document.querySelectorAll('button[data-target-alt]');
+  buttons.forEach(function(button) {
+    button.addEventListener('click', function() {
+      var targetAlt = button.getAttribute('data-target-alt');
+      var targetSlideIndex = Array.from(document.querySelectorAll('.swiper-slide img')).findIndex(function(img) {
+        return img.alt === targetAlt;
+      });
+      if (swiper.params.loop) {
+        swiper.slideToLoop(targetSlideIndex);
+      } else {
+        swiper.slideTo(targetSlideIndex);
+      }
+    });
+  });
+});
+</script>
+
+<script>
+// Text toggle on click
+document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('[data-text-toggled]').forEach(element => {
+        element.addEventListener('click', function() {
+            const defaultText = this.getAttribute('data-text-default');
+            const toggledText = this.getAttribute('data-text-toggled');
+            this.style.opacity = 0;
+            setTimeout(() => {
+                this.textContent = this.textContent === defaultText ? toggledText : defaultText;
+
+                this.style.opacity = 1;
+            }, 500);
+        });
+    });
+});
+</script>
+
+<script>
+//Toggles 'required' attribute on inputs (Hinge Side) based on visibility.
+document.addEventListener("DOMContentLoaded", function() {
+  function isElementVisible(element) {
+    return element.offsetParent !== null;
+  }
+  document.addEventListener('click', function() {
+
+    const inputs = document.querySelectorAll('[ms-code="required-if-visible"]');
+
+    inputs.forEach(function(input) {
+
+      if (isElementVisible(input)) {
+
+        input.required = true;
+      } else {
+
+        input.required = false;
+      }
+    });
+  });
+});
+</script>
+
+
+<script>
+// Function to update the filter checkbox opacity based on 0 returned results
+function updateContainerOpacity() {
+  document.querySelectorAll('.option_results_span').forEach(span => {
+    const resultCount = parseInt(span.textContent, 10);
+    const container = span.closest('.btn_form_filter');
+
+    if (resultCount === 0) {
+      container.style.opacity = '0.2';
+    } else {
+      container.style.opacity = '1';
+    }
+  });
+}
+
+// Initialize MutationObserver to watch for changes in result counts
+function observeResultChanges() {
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      if (mutation.type === 'childList' || mutation.type === 'characterData') {
+        updateContainerOpacity();
+      }
+    });
+  });
+
+  const config = { childList: true, subtree: true, characterData: true };
+  const resultSpans = document.querySelectorAll('.option_results_span');
+
+  resultSpans.forEach(span => {
+    observer.observe(span, config);
+  });
+}
+
+// Start observing when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+  observeResultChanges();
+  updateContainerOpacity(); // Initial check on page load
+});
+</script>
+<script>
+// Colour sammples: Set radio button values to color names and auto-check on button click
+window.onload = function() {
+  var collectionItems = document.querySelectorAll('.colsample_card');
+
+  collectionItems.forEach(function(collectionItem) {
+    var radioButton = collectionItem.querySelector('input[type="radio"]');
+    var colorName = collectionItem.querySelector('.colsample_name').innerText; // Adjust the selector based on your setup
+    radioButton.value = colorName;
+
+    var addButton = collectionItem.querySelector('.add_bag');
+    addButton.addEventListener('click', function() {
+      radioButton.checked = true;
+    });
+  });
+}
+</script>
+<script>
+// Populates the door colour select field with options from the door colour collection list.
+document.addEventListener('DOMContentLoaded', function () {
+    // Get all text elements with class 'door_colour_name'
+    const doorColourNames = document.querySelectorAll('.door_colour_name');
+    
+    // Convert the NodeList to an array, filtering out elements that are not visible (display: none)
+    const visibleColourOptions = Array.from(doorColourNames)
+        .filter(name => window.getComputedStyle(name).display !== 'none') // Only include visible elements
+        .map(name => name.textContent); // Get the text content
+
+    // Get all select fields with the class 'static-colour-select'
+    const selectFields = document.querySelectorAll('.static-colour-select');
+
+    // For each select field, populate with options
+    selectFields.forEach(select => {
+        // Clear existing options (if any)
+        select.innerHTML = '';
+
+        // Add each visible color as an option to the select field
+        visibleColourOptions.forEach(colour => {
+            const option = document.createElement('option');
+            option.value = colour.toLowerCase(); // Optional: set value as lowercase
+            option.textContent = colour; // Set the displayed text
+            select.appendChild(option);
+        });
+    });
+});
+</script>
